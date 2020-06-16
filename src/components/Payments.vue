@@ -6,14 +6,16 @@
     <div v-else>
       <div class="payments-table">
         <div class="payments-header">Maksut</div>
-        <div class="payments-content">
-          <div class="payments-item" v-for="pay in sorted" :key="pay.name">
-            <div class="header">
-              <p>{{ dateDayToString(pay.date) }}</p>
-              <p>{{ pay.name }}</p>
-            </div>
-            <div class="amount" :class="[pay.amount < 0 ? 'negative' : '']">
-              <p>{{ numToEuros(pay.amount) }} €</p>
+        <div class="payments-content" ref="content">
+          <div>
+            <div class="payments-item" v-for="pay in sorted" :key="pay.name">
+              <div class="header">
+                <p>{{ dateDayToString(pay.date) }}</p>
+                <p>{{ pay.name }}</p>
+              </div>
+              <div class="amount" :class="[pay.amount < 0 ? 'negative' : '']">
+                <p>{{ numToEuros(pay.amount) }} €</p>
+              </div>
             </div>
           </div>
         </div>
@@ -46,7 +48,7 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop, Watch } from "vue-property-decorator";
 import _ from "lodash";
 import { mapState, mapGetters, mapActions } from "vuex";
 import {
@@ -61,6 +63,12 @@ import {
 import LocalWindow from "./LocalWindow.vue";
 import Loading from "./Loading.vue";
 import dateDayFunctions from "../DateDayFunctions";
+
+const scrollToBottom = (el: HTMLElement) => {
+  console.log(el);
+
+  console.log(el.scrollTop, el.scrollHeight);
+};
 
 @Component({
   computed: {
@@ -83,6 +91,7 @@ import dateDayFunctions from "../DateDayFunctions";
 export default class Payments extends Vue {
   apiCall!: ApiCallStatus;
   payments!: AllPayments;
+  getContentElem!: () => HTMLElement;
   getPayments!: (year: number) => Promise<void>;
   savePayment!: (payment: {
     dateDay: DateDay;
@@ -90,6 +99,10 @@ export default class Payments extends Vue {
     name: string;
     id?: string;
   }) => Promise<void>;
+
+  $refs!: {
+    content: HTMLElement;
+  };
 
   newPaymentName = "";
   newPaymentAmount = 0;
@@ -108,6 +121,16 @@ export default class Payments extends Vue {
     return `${d.year}-${d.month + 1 < 10 ? `0${d.month + 1}` : d.month + 1}-${
       d.day < 10 ? `0${d.day}` : d.day
     }`;
+  }
+
+  @Watch("payments")
+  onPaymentsChanged(val: AllPayments, oldVal: AllPayments) {
+    if (val.ts !== oldVal.ts) {
+      this.$nextTick(() => {
+        if (this.$refs.content)
+          this.$refs.content.scrollTop = this.$refs.content.scrollHeight;
+      });
+    }
   }
 
   reset() {
@@ -131,12 +154,14 @@ export default class Payments extends Vue {
       name: this.newPaymentName,
       amount: Math.round(this.newPaymentAmount * 100),
     });
+    this.reset();
+    this.closeAdder();
   }
 
   get sorted() {
     return this.payments.payments.sort((a, b) => {
-      if (dateDayFunctions.isLessThan(a.date, b.date)) return 1;
-      if (dateDayFunctions.isGreaterThan(a.date, b.date)) return -1;
+      if (dateDayFunctions.isLessThan(a.date, b.date)) return -1;
+      if (dateDayFunctions.isGreaterThan(a.date, b.date)) return 1;
       return 0;
     });
   }
@@ -174,10 +199,8 @@ export default class Payments extends Vue {
       border-radius: 1rem 1rem 0 0;
     }
     .payments-content {
-      max-height: 70vh;
+      max-height: 60vh;
       overflow-y: scroll;
-      display: flex;
-      flex-direction: column-reverse;
       border: 2px solid black;
       .header {
         display: flex;
@@ -193,7 +216,8 @@ export default class Payments extends Vue {
         display: flex;
         border-top: 1px solid black;
         padding: 0.1rem 0.4rem;
-        &:last-child {
+        min-height: 3rem;
+        &:first-child {
           border-top: none;
         }
       }
