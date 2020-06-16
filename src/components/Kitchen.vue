@@ -476,6 +476,8 @@ export default class Kitchen extends Vue {
 }
 </script>
 <style lang="scss">
+@import "../themes.scss";
+
 .kitchen-elem {
   p {
     margin: 0;
@@ -485,10 +487,17 @@ export default class Kitchen extends Vue {
     border-radius: 1rem;
     overflow: hidden;
     margin: 0.5rem 0;
+    @include themed() {
+      border-color: t($lines);
+      background: t($secondarybg);
+    }
     .kitchen-food-row {
       border-top: 1px solid black;
       display: flex;
       padding: 0.4rem 0 0.4rem 0.6rem;
+      @include themed() {
+        border-color: t($lines);
+      }
       .table-item {
         display: flex;
         justify-content: center;
@@ -509,6 +518,9 @@ export default class Kitchen extends Vue {
     .kitchen-food-header {
       border-top: none;
       border-bottom: 1px solid black;
+      @include themed() {
+        border-color: t($lines);
+      }
       .table-item {
         font-size: 0.6rem;
       }
@@ -521,17 +533,24 @@ export default class Kitchen extends Vue {
         display: flex;
         padding-left: 0.6rem;
         &:nth-child(2n) {
-          background: lightblue;
+          @include themed() {
+            background: t($secondary);
+          }
         }
       }
     }
     .kitchen-food-totals {
       border-top: 2px solid black;
       font-weight: bold;
+      @include themed() {
+        border-color: t($lines);
+      }
     }
     &.special-food {
       .kitchen-food-header {
-        background: lightcoral;
+        @include themed() {
+          background: t($primary);
+        }
       }
     }
   }

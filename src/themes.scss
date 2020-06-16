@@ -1,0 +1,69 @@
+$primary: "primary";
+$secondary: "secondary";
+$thirdiary: "thirdiary";
+$fourth: "fourth";
+$fifth: "fifth";
+$text: "text";
+$lines: "lines";
+$success: "success";
+$fail: "fail";
+$bg: "bg";
+$secondarybg: "secondarybg";
+$oppositetext: "oppositetext";
+$neutraltextbg: "neutraltextbg";
+
+$themes: (
+  default: (
+    primary: lightcoral,
+    secondary: lightblue,
+    thirdiary: lightgreen,
+    fourth: lightcyan,
+    fifth: lightseagreen,
+    text: black,
+    lines: black,
+    success: lightgreen,
+    fail: lightcoral,
+    bg: white,
+    secondarybg: white,
+    oppositetext: white,
+    neutraltextbg: lightgray,
+  ),
+  dark: (
+    primary: darkgreen,
+    secondary: darkkhaki,
+    thirdiary: darkgray,
+    fourth: darkcyan,
+    fifth: darkseagreen,
+    text: white,
+    lines: white,
+    success: darkgreen,
+    fail: darkred,
+    bg: #101010,
+    secondarybg: #202020,
+    oppositetext: black,
+    neutraltextbg: darkgray,
+  ),
+);
+
+@mixin themed() {
+  @each $theme, $map in $themes {
+    .theme--#{$theme} & {
+      $theme-map: () !global;
+      @each $key, $submap in $map {
+        $value: map-get(map-get($themes, $theme), "#{$key}");
+        $theme-map: map-merge(
+          $theme-map,
+          (
+            $key: $value,
+          )
+        ) !global;
+      }
+      @content;
+      $theme-map: null !global;
+    }
+  }
+}
+
+@function t($key) {
+  @return map-get($theme-map, $key);
+}

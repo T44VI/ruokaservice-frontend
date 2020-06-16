@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="month-elem">
     <MiniTabChooser
       :keys="keys"
       :onChange="onChange"
@@ -309,172 +309,204 @@ export default class Month extends Vue {
 }
 </script>
 <style lang="scss">
-$onlyCoffeeColor: lightblue;
-$allSameColor: lightgreen;
-$exceptionColor: yellow;
-$specialPriceColor: lightcoral;
-$noFoodColor: magenta;
+@import "../themes.scss";
 
-.month-week {
-  display: flex;
-  width: 100%;
-  .month-day {
-    flex-grow: 1;
-    width: 5vw;
-    background: white;
-    margin: 3px;
-  }
-  .month-dayless {
-    background: transparent;
-  }
-}
-.month-dayNum {
-  background: lightgray;
-  min-height: 1.5em;
-}
-.month-dayInfo {
-  height: 5vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  .price {
+.month-elem {
+  .month-week {
     display: flex;
-    height: 100%;
     width: 100%;
-    div {
-      display: flex;
-      flex-direction: column;
-      &:first-child {
-        flex-grow: 1;
-        justify-content: center;
-        align-items: center;
-        h4 {
-          font-size: 1.2rem;
-          font-weight: normal;
-          &:nth-child(2) {
-            font-size: 0.8rem;
-          }
-        }
+    .month-day {
+      flex-grow: 1;
+      width: 5vw;
+      margin: 3px;
+      @include themed() {
+        border-color: t($lines);
+        background: t($bg);
       }
-      &:nth-child(2) {
-        justify-content: center;
-        margin: 0.4rem;
+      &.month-dayless {
+        background: transparent;
       }
     }
   }
-  &.onlyCoffee {
-    background: $onlyCoffeeColor;
-  }
-  &.allSame {
-    background: $allSameColor;
-  }
-  &.exception {
-    background: $exceptionColor;
-  }
-  &.noFood {
-    background: $noFoodColor;
-  }
-  &.specialPrice {
-    background: $specialPriceColor;
-    &.exception {
-      background: repeating-linear-gradient(
-        45deg,
-        $specialPriceColor,
-        $specialPriceColor 10px,
-        $exceptionColor 10px,
-        $exceptionColor 20px
-      );
+  .month-dayNum {
+    border-bottom: 1px solid black;
+    @include themed() {
+      background: t($neutraltextbg);
+      color: t($text);
+      border-color: t($oppositetext);
     }
-    &.allSame {
-      background: repeating-linear-gradient(
-        45deg,
-        $specialPriceColor,
-        $specialPriceColor 10px,
-        $allSameColor 10px,
-        $allSameColor 20px
-      );
-    }
-    &.onlyCoffee {
-      background: repeating-linear-gradient(
-        45deg,
-        $specialPriceColor,
-        $specialPriceColor 10px,
-        $onlyCoffeeColor 10px,
-        $onlyCoffeeColor 20px
-      );
-    }
+    min-height: 1.5em;
   }
-
-  h4 {
-    margin: 0;
-  }
-}
-.colorDesc {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  .colorDesc-color {
+  .month-dayInfo {
+    height: 5vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    .colorDesc-colorview {
-      height: 2rem;
-      width: 2rem;
-      background: white;
-      border: 2px solid black;
-      margin: 0.2rem;
+    .price {
+      display: flex;
+      height: 100%;
+      width: 100%;
+      div {
+        display: flex;
+        flex-direction: column;
+        &:first-child {
+          flex-grow: 1;
+          justify-content: center;
+          align-items: center;
+          h4 {
+            font-size: 1.2rem;
+            font-weight: normal;
+            &:nth-child(2) {
+              font-size: 0.8rem;
+            }
+          }
+        }
+        &:nth-child(2) {
+          justify-content: center;
+          margin: 0.4rem;
+        }
+      }
+    }
+    @include themed() {
       &.onlyCoffee {
-        background: $onlyCoffeeColor;
+        background: t($secondary);
       }
       &.allSame {
-        background: $allSameColor;
+        background: t($thirdiary);
       }
       &.exception {
-        background: $exceptionColor;
-      }
-      &.specialPrice {
-        background: $specialPriceColor;
+        background: t($fifth);
       }
       &.noFood {
-        background: $noFoodColor;
+        background: t($neutraltextbg);
+      }
+      &.specialPrice {
+        background: t($primary);
+        &.exception {
+          background: repeating-linear-gradient(
+            45deg,
+            t($primary),
+            t($primary) 10px,
+            t($fifth) 10px,
+            t($fifth) 20px
+          );
+        }
+        &.allSame {
+          background: repeating-linear-gradient(
+            45deg,
+            t($primary),
+            t($primary) 10px,
+            t($thirdiary) 10px,
+            t($thirdiary) 20px
+          );
+        }
+        &.onlyCoffee {
+          background: repeating-linear-gradient(
+            45deg,
+            t($primary),
+            t($primary) 10px,
+            t($secondary) 10px,
+            t($secondary) 20px
+          );
+        }
       }
     }
-    .colorDesc-desc {
+
+    h4 {
+      margin: 0;
+      @include themed() {
+        color: t($text);
+      }
     }
   }
-}
-
-.calendar {
-  background: lightcyan;
-  border: 2px solid black;
-  border-radius: 10px;
-  overflow: hidden;
-  .monthHeader {
+  .colorDesc {
     display: flex;
-    font-size: 1.2rem;
-    border-bottom: 2px solid black;
-    background: lightcoral;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    .colorDesc-color {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .colorDesc-colorview {
+        height: 2rem;
+        width: 2rem;
+        border: 2px solid black;
+        margin: 0.2rem;
+        @include themed() {
+          background: t($secondarybg);
 
-    .mh-button {
-      padding: 0.15rem 0.6rem;
-      user-select: none;
-      cursor: pointer;
-      &:hover {
-        background: lightpink;
+          border-color: t($lines);
+          &.onlyCoffee {
+            background: t($secondary);
+          }
+          &.allSame {
+            background: t($thirdiary);
+          }
+          &.exception {
+            background: t($fifth);
+          }
+          &.specialPrice {
+            background: t($primary);
+          }
+          &.noFood {
+            background: t($neutraltextbg);
+          }
+        }
       }
-      &:active {
-        background: white;
+      .colorDesc-desc {
       }
     }
-    .mh-left {
-      border-right: 2px solid black;
+  }
+
+  .calendar {
+    border: 2px solid black;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 1rem;
+    @include themed() {
+      background: t($secondarybg);
+      border-color: t($lines);
     }
-    .mh-middle {
-      flex-grow: 1;
-      padding: 0.2rem;
-    }
-    .mh-right {
-      border-left: 2px solid black;
+    .monthHeader {
+      display: flex;
+      font-size: 1.2rem;
+      border-bottom: 2px solid black;
+      @include themed() {
+        background: t($primary);
+        border-color: t($lines);
+      }
+
+      .mh-button {
+        padding: 0.15rem 0.6rem;
+        user-select: none;
+        cursor: pointer;
+        &:hover {
+          @include themed() {
+            background: t($secondary);
+          }
+        }
+        &:active {
+          @include themed() {
+            background: t($oppositetext);
+          }
+        }
+      }
+      .mh-left {
+        border-right: 2px solid black;
+        @include themed() {
+          border-color: t($lines);
+        }
+      }
+      .mh-middle {
+        flex-grow: 1;
+        padding: 0.2rem;
+      }
+      .mh-right {
+        border-left: 2px solid black;
+        @include themed() {
+          border-color: t($lines);
+        }
+      }
     }
   }
 }

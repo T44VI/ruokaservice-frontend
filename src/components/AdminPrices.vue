@@ -247,6 +247,8 @@ export default class AdminPrice extends Vue {
 }
 </script>
 <style lang="scss">
+@import "../themes.scss";
+
 .admin-price {
   .loaded-content {
     .header {
@@ -262,8 +264,15 @@ export default class AdminPrice extends Vue {
     border: 2px solid black;
     border-radius: 0.5rem;
     overflow: hidden;
+    @include themed() {
+      border-color: t($lines);
+      background: t($secondarybg);
+    }
     .row {
       border-bottom: 1px solid black;
+      @include themed() {
+        border-color: t($lines);
+      }
       .first-row {
         display: flex;
         align-items: center;
@@ -287,17 +296,20 @@ export default class AdminPrice extends Vue {
     }
     .data-item-value {
       font-weight: bolder;
-      background: lightblue;
       padding: 0.4rem;
+      @include themed() {
+        background: t($secondary);
+      }
     }
     .data-item-key {
       font-size: 0.8rem;
-      background: lightgray;
       padding: 0.2rem;
+      @include themed() {
+        background: t($neutraltextbg);
+      }
     }
   }
   .add-new {
-    color: black;
     user-select: none;
     cursor: pointer;
     display: flex;
@@ -316,9 +328,20 @@ export default class AdminPrice extends Vue {
       justify-content: center;
       align-items: center;
       border-radius: 1rem;
+
+      @include themed() {
+        border-color: t($lines);
+      }
       p {
         text-align: center;
       }
+    }
+  }
+
+  input {
+    background: transparent;
+    @include themed() {
+      color: t($text);
     }
   }
 }

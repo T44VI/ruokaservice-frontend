@@ -25,6 +25,8 @@ export default class LocalWindow extends Vue {
 }
 </script>
 <style lang="scss">
+@import "../themes.scss";
+
 .local-window {
   opacity: 1;
   top: 0;
@@ -33,14 +35,18 @@ export default class LocalWindow extends Vue {
   right: 0;
   &.background {
     position: fixed;
-    background: rgba(0, 0, 0, 0.5);
     padding: 1rem;
+    @include themed() {
+      background: rgba(t($text), 0.3);
+    }
   }
   .content {
-    background: white;
     padding: 0.8rem;
     border-radius: 1rem;
     overflow: hidden;
+    @include themed() {
+      background: t($bg);
+    }
     .header {
       display: flex;
       align-items: center;
@@ -48,6 +54,9 @@ export default class LocalWindow extends Vue {
         flex-grow: 1;
       }
       border-bottom: 2px solid black;
+      @include themed() {
+        border-color: t($lines);
+      }
     }
     .real-content {
       overflow: scroll;

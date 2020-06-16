@@ -321,9 +321,14 @@ export default class PriceEditor extends Vue {
 }
 </script>
 <style lang="scss">
+@import "../themes.scss";
+
 .price-editor {
   .price-editor-buttons {
     border-top: 2px solid black;
+    @include themed() {
+      border-color: t($lines);
+    }
     button {
       width: 40%;
     }

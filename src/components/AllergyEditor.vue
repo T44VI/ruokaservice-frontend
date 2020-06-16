@@ -144,6 +144,8 @@ export default class AllergyEditor extends Vue {
 }
 </script>
 <style lang="scss">
+@import "../themes.scss";
+
 .allergy-editor {
   .allergy-content {
     display: flex;
@@ -165,8 +167,12 @@ export default class AllergyEditor extends Vue {
           margin-right: 0.5rem;
         }
       }
-      &.added {
-        background: lightgreen;
+      @include themed() {
+        background: t($fail);
+
+        &.added {
+          background: t($success);
+        }
       }
     }
   }
@@ -175,11 +181,18 @@ export default class AllergyEditor extends Vue {
     text-align: left;
     margin: 1rem 0;
     font-size: 1.2rem;
+    @include themed() {
+      border-color: t($lines);
+    }
   }
   input {
     width: 90%;
     font-size: 1.1rem;
     margin: 1rem 0;
+    background: transparent;
+    @include themed() {
+      color: t($text);
+    }
   }
   .allergy-buttons {
     display: flex;

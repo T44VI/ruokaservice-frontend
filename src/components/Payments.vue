@@ -188,6 +188,8 @@ export default class Payments extends Vue {
 }
 </script>
 <style lang="scss">
+@import "../themes.scss";
+
 .payments {
   .payments-table {
     .payments-header {
@@ -197,11 +199,21 @@ export default class Payments extends Vue {
       border-bottom: none;
       padding: 0.5rem;
       border-radius: 1rem 1rem 0 0;
+
+      @include themed() {
+        border-color: t($lines);
+
+        background: t($secondarybg);
+      }
     }
     .payments-content {
       max-height: 60vh;
       overflow-y: scroll;
       border: 2px solid black;
+      @include themed() {
+        border-color: t($lines);
+        background: t($secondarybg);
+      }
       .header {
         display: flex;
         align-items: center;
@@ -217,6 +229,9 @@ export default class Payments extends Vue {
         border-top: 1px solid black;
         padding: 0.1rem 0.4rem;
         min-height: 3rem;
+        @include themed() {
+          border-color: t($lines);
+        }
         &:first-child {
           border-top: none;
         }
@@ -229,6 +244,10 @@ export default class Payments extends Vue {
       border-radius: 0 0 1rem 1rem;
       font-weight: bold;
       padding: 0.1rem 0.4rem;
+      @include themed() {
+        border-color: t($lines);
+        background: t($secondarybg);
+      }
     }
     .header {
       flex-grow: 1;
@@ -239,7 +258,6 @@ export default class Payments extends Vue {
       padding: 0.2rem 0.6rem;
       margin: 0.2rem;
       border-radius: 0.5rem;
-      background: lightgreen;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -248,8 +266,13 @@ export default class Payments extends Vue {
       p {
         margin: 0;
       }
-      &.negative {
-        background: lightcoral;
+
+      @include themed() {
+        border-color: t($lines);
+        background: t($success);
+        &.negative {
+          background: t($fail);
+        }
       }
     }
   }

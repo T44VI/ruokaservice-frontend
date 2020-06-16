@@ -61,12 +61,17 @@ export default class NumPicker extends Vue {
 }
 </script>
 <style lang="scss">
+@import "../themes.scss";
+
 .numPicker {
   display: flex;
   border: 2px solid black;
   border-radius: 10px;
   font-size: 1.4rem;
   height: 2rem;
+  @include themed() {
+    border-color: t($lines);
+  }
   .numPicker-button {
     display: flex;
     align-items: center;
@@ -79,19 +84,30 @@ export default class NumPicker extends Vue {
   .numPicker-dec {
     border-right: 1px solid black;
     padding: 0 0.8rem;
+    @include themed() {
+      border-color: t($lines);
+    }
     &.disabled {
-      background: rgba(0, 0, 0, 0.2);
       cursor: not-allowed;
       border-radius: 8px 0 0 8px;
+      @include themed() {
+        background: rgba(t($text), 0.2);
+      }
     }
   }
   .numPicker-inc {
     border-left: 1px solid black;
     padding: 0 0.5rem;
+    @include themed() {
+      border-color: t($lines);
+    }
     &.disabled {
-      background: rgba(0, 0, 0, 0.2);
       cursor: not-allowed;
       border-radius: 0 8px 8px 0;
+
+      @include themed() {
+        background: rgba(t($text), 0.2);
+      }
     }
   }
   .numPicker-content {
@@ -104,6 +120,10 @@ export default class NumPicker extends Vue {
       background: transparent;
       box-shadow: none;
       border: none;
+
+      @include themed() {
+        color: t($text);
+      }
     }
   }
 }

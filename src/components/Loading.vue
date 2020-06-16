@@ -21,6 +21,8 @@ import { Vue, Component } from "vue-property-decorator";
 export default class Loading extends Vue {}
 </script>
 <style lang="scss">
+@import "../themes.scss";
+
 .lds-default {
   display: inline-block;
   position: relative;
@@ -31,9 +33,11 @@ export default class Loading extends Vue {}
   position: absolute;
   width: 6px;
   height: 6px;
-  background: black;
   border-radius: 50%;
   animation: lds-default 1.2s linear infinite;
+  @include themed() {
+    background: t($text);
+  }
 }
 .lds-default div:nth-child(1) {
   animation-delay: 0s;

@@ -573,10 +573,15 @@ export default class Day extends Vue {
 }
 </script>
 <style lang="scss">
+@import "../themes.scss";
+
 .food {
   .food-header {
     display: flex;
     border: 2px solid black;
+    @include themed() {
+      border-color: t($lines);
+    }
     border-radius: 0.5rem 0.5rem 0 0;
     p {
       margin: 0.5rem;
@@ -591,11 +596,17 @@ export default class Day extends Vue {
     border-radius: 0 0 0.5rem 0.5rem;
     border-top: none;
     margin-bottom: 1rem;
+    @include themed() {
+      border-color: t($lines);
+    }
     .food-content-price {
       display: flex;
       padding: 1rem;
       align-items: center;
       border-top: 1px solid black;
+      @include themed() {
+        border-color: t($lines);
+      }
       &:first-child {
         border-top: none;
       }
@@ -617,41 +628,46 @@ export default class Day extends Vue {
           user-select: none;
         }
       }
-      &.new-price.price-editable {
-        background: repeating-linear-gradient(
-          45deg,
-          yellow,
-          yellow 20px,
-          lightcoral 20px,
-          lightcoral 40px
-        );
-        transition: background 0.3s;
-      }
-      &.no-new-price.price-editable {
-        background: yellow;
-        transition: background 0.3s;
-      }
-      &.new-price.no-price-editable {
-        background: lightcoral;
-        transition: background 0.3s;
-      }
-      &.no-new-price.no-price-editable {
-        background: white;
-        transition: background 0.3s;
-      }
-      .new-count {
-        background: lightcoral;
-        transition: background 0.3s;
-      }
-      .no-new-count {
-        background: white;
-        transition: background 0.3s;
+
+      @include themed() {
+        &.new-price.price-editable {
+          background: repeating-linear-gradient(
+            45deg,
+            t($secondary),
+            t($secondary) 20px,
+            t($primary) 20px,
+            t($primary) 40px
+          );
+          transition: background 0.3s;
+        }
+        &.no-new-price.price-editable {
+          background: t($secondary);
+          transition: background 0.3s;
+        }
+        &.new-price.no-price-editable {
+          background: t($primary);
+          transition: background 0.3s;
+        }
+        &.no-new-price.no-price-editable {
+          background: transparent;
+          transition: background 0.3s;
+        }
+        .new-count {
+          background: t($primary);
+          transition: background 0.3s;
+        }
+        .no-new-count {
+          background: transparent;
+          transition: background 0.3s;
+        }
       }
     }
     .add-special {
-      color: black;
       user-select: none;
       cursor: pointer;
+      @include themed() {
+        color: t($text);
+      }
       .add {
         font-size: 1.4rem;
         border: 2px solid black;
@@ -662,6 +678,9 @@ export default class Day extends Vue {
         justify-content: center;
         align-items: center;
         border-radius: 1rem;
+        @include themed() {
+          border-color: t($lines);
+        }
         p {
           text-align: center;
         }
@@ -673,13 +692,16 @@ export default class Day extends Vue {
       padding: 0.5rem;
       border-top: 2px solid black;
       align-items: center;
-      &.edited {
-        background: lightcoral;
-        transition: background 0.3s;
-      }
-      &.not-edited {
-        background: white;
-        transition: background 0.3s;
+      @include themed() {
+        border-color: t($lines);
+        &.edited {
+          background: t($primary);
+          transition: background 0.3s;
+        }
+        &.not-edited {
+          background: transparent;
+          transition: background 0.3s;
+        }
       }
       p {
         font-weight: bold;
@@ -703,6 +725,11 @@ export default class Day extends Vue {
   display: flex;
   align-items: center;
   justify-content: space-around;
+
+  @include themed() {
+    border-color: t($lines);
+    background: t($secondarybg);
+  }
   button {
     width: 40%;
     border-radius: 10px;

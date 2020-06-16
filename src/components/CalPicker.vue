@@ -220,21 +220,30 @@ export default class CalPicker extends Vue {
 }
 </script>
 <style lang="scss">
+@import "../themes.scss";
+
 .cal-picker {
   .cal-picker-nav {
     display: flex;
     padding-bottom: 0.2rem;
     border-bottom: 2px solid black;
     align-items: center;
+
+    @include themed() {
+      border-color: t($lines);
+    }
     button {
       margin: 0;
       border-radius: 0;
       border: none;
-      &:first-child {
-        border-right: 2px solid black;
-      }
-      &:last-child {
-        border-left: 2px solid black;
+
+      @include themed() {
+        &:first-child {
+          border-right: 2px solid t($lines);
+        }
+        &:last-child {
+          border-left: 2px solid t($lines);
+        }
       }
     }
     p {
@@ -249,12 +258,20 @@ export default class CalPicker extends Vue {
     align-items: center;
     .cal-picker-event {
       border: 1px solid black;
+
+      @include themed() {
+        border-color: t($lines);
+      }
       border-left: none;
       padding: 0;
       overflow: hidden;
       &:first-child {
         border-radius: 0.5rem 0 0 0.5rem;
         border-left: 1px solid black;
+
+        @include themed() {
+          border-color: t($lines);
+        }
       }
       &:last-child {
         border-radius: 0 0.5rem 0.5rem 0;
@@ -268,7 +285,9 @@ export default class CalPicker extends Vue {
       }
       .cal-picker-event-second {
         font-size: 0.7rem;
-        background: lightgray;
+        @include themed() {
+          background: t($neutraltextbg);
+        }
         padding: 0.1rem 0.2rem;
         p {
           margin: 0;
@@ -278,7 +297,9 @@ export default class CalPicker extends Vue {
 
     &.current-blocked {
       .cal-picker-event-first {
-        background: red;
+        @include themed() {
+          background: t($fail);
+        }
       }
     }
   }
@@ -291,7 +312,6 @@ export default class CalPicker extends Vue {
       display: flex;
       .cal-picker-day {
         flex-grow: 1;
-        background: lightblue;
         margin: 0.2rem;
         width: 5rem;
         font-size: 1.1rem;
@@ -304,18 +324,22 @@ export default class CalPicker extends Vue {
         p {
           margin: 0;
         }
-        &.cal-picker-dayless {
-          background: none;
-        }
-        &.blocked-day {
-          background: lightgray;
-          cursor: not-allowed;
-        }
-        &.choosed-day {
-          background: blue;
-        }
-        &.blocked-day.choosed-day {
-          background: red;
+        @include themed() {
+          background: t($secondary);
+
+          &.cal-picker-dayless {
+            background: none;
+          }
+          &.blocked-day {
+            background: t($neutraltextbg);
+            cursor: not-allowed;
+          }
+          &.choosed-day {
+            background: t($fifth);
+          }
+          &.blocked-day.choosed-day {
+            background: t($fail);
+          }
         }
       }
     }

@@ -234,13 +234,22 @@ export default class Profile extends Vue {
 }
 </script>
 <style lang="scss">
+@import "../themes.scss";
+
 .profile {
   .profile-allergy-list {
     border: 2px solid black;
     border-radius: 10px;
+    @include themed() {
+      border-color: t($lines);
+      background: t($secondarybg);
+    }
     .profile-allergy-item {
       display: flex;
       border-bottom: 1px solid black;
+      @include themed() {
+        border-color: t($lines);
+      }
       .text-holder {
         flex-grow: 1;
         display: flex;
@@ -268,7 +277,6 @@ export default class Profile extends Vue {
     justify-content: space-evenly;
     overflow: hidden;
     .allergy-item {
-      background: lightcoral;
       display: flex;
       margin: 0.2rem;
       padding: 0.5rem 0.7rem;
@@ -282,8 +290,11 @@ export default class Profile extends Vue {
           margin-right: 0.5rem;
         }
       }
-      &.added {
-        background: lightgreen;
+      @include themed() {
+        background: t($fail);
+        &.added {
+          background: t($success);
+        }
       }
     }
   }
@@ -301,11 +312,19 @@ export default class Profile extends Vue {
       }
       input {
         flex-grow: 1;
+        background: transparent;
+        @include themed() {
+          color: t($text);
+        }
       }
     }
   }
   .bottom-button {
     border-top: 2px solid black;
+
+    @include themed() {
+      border-color: t($lines);
+    }
     button {
       width: 80%;
     }

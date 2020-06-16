@@ -33,6 +33,8 @@ export default class MiniTabChooser extends Vue {
 }
 </script>
 <style lang="scss">
+@import "../themes.scss";
+
 .tabChooser {
   display: flex;
 }
@@ -41,12 +43,23 @@ export default class MiniTabChooser extends Vue {
   height: 2rem;
   border: solid black;
   border-width: 2px 1px;
-  background: white;
   display: flex;
   align-items: center;
   justify-content: center;
   user-select: none;
   cursor: pointer;
+  @include themed() {
+    border-color: t($lines);
+    background: t($secondarybg);
+    &.choosed {
+      box-shadow: inset 0 0 7px 3px gray;
+      background: t($neutraltextbg);
+      cursor: default;
+    }
+    &:active {
+      background: t($neutraltextbg);
+    }
+  }
   &.left {
     border-left-width: 2px;
     border-radius: 10px 0 0 10px;
@@ -54,14 +67,6 @@ export default class MiniTabChooser extends Vue {
   &.right {
     border-right-width: 2px;
     border-radius: 0 10px 10px 0;
-  }
-  &.choosed {
-    box-shadow: inset 0 0 7px 3px gray;
-    background: lightgray;
-    cursor: default;
-  }
-  &:active {
-    background: lightgray;
   }
   p {
     margin: 0;

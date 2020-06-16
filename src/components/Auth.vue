@@ -156,25 +156,40 @@ export default class Auth extends Vue {
 }
 </script>
 <style lang="scss">
+@import "../themes.scss";
+
 .auth {
   .auth-content {
     .auth-user-list {
       border: 2px solid black;
       border-radius: 10px;
       overflow: hidden;
+      @include themed() {
+        border-color: t($lines);
+      }
       .auth-user-item {
         border-bottom: 1px solid black;
         user-select: none;
         cursor: pointer;
         padding: 0.6rem;
-        &.choosed {
-          background: lightcoral;
+        @include themed() {
+          border-color: t($lines);
+
+          &.choosed {
+            background: t($primary);
+          }
         }
         p {
           margin: 0;
           font-size: 1rem;
         }
       }
+    }
+  }
+  input {
+    @include themed() {
+      background: transparent;
+      color: t($text);
     }
   }
 }
