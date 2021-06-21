@@ -73,7 +73,7 @@
                       </p></router-link
                     >
                     <button @click="toggleDarkTheme()">
-                      {{ darkTheme ? "Vaalea teema" : "Tumma teema" }}
+                      {{ darkTheme ? 'Vaalea teema' : 'Tumma teema' }}
                     </button>
 
                     <p class="vinfo">{{ buildNum }}</p>
@@ -93,22 +93,22 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue } from 'vue-property-decorator';
 //import HelloWorld from "./components/HelloWorld.vue";
-import Day from "./components/Day.vue";
-import Month from "./components/Month.vue";
-import "normalize.css";
-import { mapState, mapMutations } from "vuex";
-import { UserData } from "./types";
-import Auth from "./components/Auth.vue";
+import Day from './components/Day.vue';
+import Month from './components/Month.vue';
+import 'normalize.css';
+import { mapState, mapMutations } from 'vuex';
+import { UserData } from './types';
+import Auth from './components/Auth.vue';
 
 @Component({
   computed: {
-    ...mapState({ user: "user" }),
+    ...mapState({ user: 'user' })
   },
   components: {
-    Auth,
-  },
+    Auth
+  }
 })
 export default class App extends Vue {
   user!: UserData;
@@ -124,19 +124,19 @@ export default class App extends Vue {
   }
 
   names = {
-    month: "Kuukausi",
-    admin: "Admin",
-    profile: "Profiili",
-    payments: "Maksut",
-    auth: "Vaihda profiilia",
+    month: 'Kuukausi',
+    admin: 'Admin',
+    profile: 'Profiili',
+    payments: 'Maksut',
+    auth: 'Vaihda profiilia'
   };
 
-  buildNum = "Devbuild-2021-06-21-1";
+  buildNum = 'Devbuild-2021-06-21-3';
 }
 </script>
 
 <style lang="scss">
-@import "./themes.scss";
+@import './themes.scss';
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

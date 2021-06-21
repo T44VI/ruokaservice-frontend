@@ -134,7 +134,7 @@ const calculatePrices = (relevantPrices: Price[], day: Day): number => {
     );
     return (
       price.normal * counts[0] +
-      price.young * counts[1] +
+      price.discount * counts[1] +
       price.young * counts[2] +
       price.child * counts[3]
     );
