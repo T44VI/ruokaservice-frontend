@@ -1,4 +1,4 @@
-<template>
+paymentDateOnChange<template>
   <div class="payments">
     <div v-if="isLoading">
       <Loading />
@@ -38,6 +38,14 @@
       <p v-if="errorMessage">{{ errorMessage }}</p>
       <p>Maksun nimi</p>
       <input v-model="newPaymentName" />
+      <p>Päivämäärä</p>
+      <div class="centerContent">
+        <CalPicker
+          :dateDay="newPaymentDate"
+          :onChange="paymentDateOnChange"
+          :blocked="[]"
+        />
+      </div>
       <p>Maksun määrä (€) - Muista käyttää pistettä desimaalierottimena!</p>
       <input v-model.number="newPaymentAmount" />
       <div class="allergy-buttons">
@@ -48,9 +56,9 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from "vue-property-decorator";
-import _ from "lodash";
-import { mapState, mapGetters, mapActions } from "vuex";
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
+import _ from 'lodash';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import {
   AdminData,
   Price,
@@ -58,11 +66,12 @@ import {
   DateDay,
   PriceEditorBase,
   DateDayBlock,
-  AllPayments,
-} from "../types";
-import LocalWindow from "./LocalWindow.vue";
-import Loading from "./Loading.vue";
-import dateDayFunctions from "../DateDayFunctions";
+  AllPayments
+} from '../types';
+import LocalWindow from './LocalWindow.vue';
+import Loading from './Loading.vue';
+import CalPicker from './CalPicker.vue';
+import dateDayFunctions from '../DateDayFunctions';
 
 const scrollToBottom = (el: HTMLElement) => {
   console.log(el);
@@ -73,20 +82,21 @@ const scrollToBottom = (el: HTMLElement) => {
 @Component({
   computed: {
     ...mapState({
-      apiCall: "apiCall",
-      payments: "payments",
-    }),
+      apiCall: 'apiCall',
+      payments: 'payments'
+    })
   },
   methods: {
     ...mapActions({
-      getPayments: "getPayments",
-      savePayment: "savePayment",
-    }),
+      getPayments: 'getPayments',
+      savePayment: 'savePayment'
+    })
   },
   components: {
     LocalWindow,
     Loading,
-  },
+    CalPicker
+  }
 })
 export default class Payments extends Vue {
   apiCall!: ApiCallStatus;
@@ -104,9 +114,14 @@ export default class Payments extends Vue {
     content: HTMLElement;
   };
 
-  newPaymentName = "";
+  newPaymentName = '';
   newPaymentAmount = 0;
-  errorMessage = "";
+  newPaymentDate: DateDay = dateDayFunctions.today();
+  errorMessage = '';
+
+  paymentDateOnChange(newVal: DateDay) {
+    this.newPaymentDate = newVal;
+  }
 
   numToEuros(num: number): string {
     if (num < 0) {
@@ -123,7 +138,7 @@ export default class Payments extends Vue {
     }`;
   }
 
-  @Watch("payments")
+  @Watch('payments')
   onPaymentsChanged(val: AllPayments, oldVal: AllPayments) {
     if (val.ts !== oldVal.ts) {
       this.$nextTick(() => {
@@ -134,25 +149,25 @@ export default class Payments extends Vue {
   }
 
   reset() {
-    this.newPaymentName = "";
+    this.newPaymentName = '';
     this.newPaymentAmount = 0;
-    this.errorMessage = "";
+    this.errorMessage = '';
   }
   confirmAddNew() {
-    this.errorMessage = "";
+    this.errorMessage = '';
     if (this.newPaymentName.length === 0) {
-      this.errorMessage = "Maksulla on oltava nimi.";
+      this.errorMessage = 'Maksulla on oltava nimi.';
       return;
     }
     if (!this.newPaymentAmount || this.newPaymentAmount <= 0) {
-      this.errorMessage = "Maksulla on oltava positiivinen määrä.";
+      this.errorMessage = 'Maksulla on oltava positiivinen määrä.';
       return;
     }
     const d = new Date();
     this.savePayment({
-      dateDay: { year: d.getFullYear(), month: d.getMonth(), day: d.getDate() },
+      dateDay: this.newPaymentDate,
       name: this.newPaymentName,
-      amount: Math.round(this.newPaymentAmount * 100),
+      amount: Math.round(this.newPaymentAmount * 100)
     });
     this.reset();
     this.closeAdder();
@@ -188,9 +203,14 @@ export default class Payments extends Vue {
 }
 </script>
 <style lang="scss">
-@import "../themes.scss";
+@import '../themes.scss';
 
 .payments {
+  .centerContent {
+    display: flex;
+    justify-content: center;
+  }
+
   .payments-table {
     .payments-header {
       font-size: 1.2rem;
