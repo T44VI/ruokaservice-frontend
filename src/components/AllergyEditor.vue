@@ -55,44 +55,46 @@
   </div>
 </template>
 <script lang="ts">
-import "reflect-metadata";
-import { Vue, Component, Prop } from "vue-property-decorator";
-import _ from "lodash";
-import MiniTabChooser from "./MiniTabChooser.vue";
-import LocalWindow from "./LocalWindow.vue";
-import { AllergyEditorProfile, State } from "../types";
-import { mapState, mapGetters } from "vuex";
+import 'reflect-metadata';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import _ from 'lodash';
+import MiniTabChooser from './MiniTabChooser.vue';
+import LocalWindow from './LocalWindow.vue';
+import { AllergyEditorProfile, State } from '../types';
+import { mapState, mapGetters } from 'vuex';
 
-const numberTranslator: ("normal" | "young" | "child")[] = [
-  "normal",
-  "young",
-  "child",
+const numberTranslator: ('normal' | 'discount' | 'young' | 'child')[] = [
+  'normal',
+  'discount',
+  'young',
+  'child'
 ];
 const baseTranslator = {
   normal: 0,
-  young: 1,
-  child: 2,
+  discount: 1,
+  young: 2,
+  child: 3
 };
 
 @Component({
   computed: {
     ...mapGetters({
-      allergies: "getAllergies",
-    }),
+      allergies: 'getAllergies'
+    })
   },
   components: {
     MiniTabChooser,
-    LocalWindow,
-  },
+    LocalWindow
+  }
 })
 export default class AllergyEditor extends Vue {
   allergies!: string[];
   @Prop() readonly profile!: AllergyEditorProfile;
   @Prop() readonly onChange!: (newVal: AllergyEditorProfile) => void;
   newWindowOpen = false;
-  newWindowInput = "";
+  newWindowInput = '';
 
-  keys = ["Aikuinen", "Nuori", "Lapsi"];
+  keys = ['Aikuinen', 'Alennettu', 'Nuori', 'Lapsi'];
   onBaseChange(newVal: number) {
     this.onChange({ ...this.profile, base: numberTranslator[newVal] });
   }
@@ -100,7 +102,7 @@ export default class AllergyEditor extends Vue {
   addAllergy(allergy: string) {
     this.onChange({
       ...this.profile,
-      allergies: this.profile.allergies.concat(allergy),
+      allergies: this.profile.allergies.concat(allergy)
     });
   }
 
@@ -109,14 +111,14 @@ export default class AllergyEditor extends Vue {
       ...this.profile,
       allergies: [
         ...this.profile.allergies.slice(0, index),
-        ...this.profile.allergies.slice(index + 1),
-      ],
+        ...this.profile.allergies.slice(index + 1)
+      ]
     });
   }
 
   addNew() {
     this.newWindowOpen = true;
-    this.newWindowInput = "";
+    this.newWindowInput = '';
   }
 
   confirmAddNew() {
@@ -129,9 +131,7 @@ export default class AllergyEditor extends Vue {
   }
 
   get freeAllergies() {
-    return this.allergies.filter(
-      (all) => !this.profile.allergies.includes(all)
-    );
+    return this.allergies.filter(all => !this.profile.allergies.includes(all));
   }
 
   get choosedTab() {
@@ -144,7 +144,7 @@ export default class AllergyEditor extends Vue {
 }
 </script>
 <style lang="scss">
-@import "../themes.scss";
+@import '../themes.scss';
 
 .allergy-editor {
   .allergy-content {

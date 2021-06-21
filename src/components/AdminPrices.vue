@@ -13,7 +13,7 @@
           </div>
           <div class="second-row">
             <div
-              v-for="data in dataSchema.filter((p) => !p.specialOnly)"
+              v-for="data in dataSchema.filter(p => !p.specialOnly)"
               :key="data.key"
               class="data-item"
             >
@@ -81,20 +81,20 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component, Prop } from "vue-property-decorator";
-import _ from "lodash";
-import { mapState, mapGetters, mapActions } from "vuex";
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import _ from 'lodash';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import {
   AdminData,
   Price,
   ApiCallStatus,
   DateDay,
   PriceEditorBase,
-  DateDayBlock,
-} from "../types";
-import LocalWindow from "./LocalWindow.vue";
-import PriceEditor from "./PriceEditor.vue";
-import Loading from "./Loading.vue";
+  DateDayBlock
+} from '../types';
+import LocalWindow from './LocalWindow.vue';
+import PriceEditor from './PriceEditor.vue';
+import Loading from './Loading.vue';
 
 type DataItem = {
   key: string;
@@ -110,41 +110,41 @@ const numToMoney = (num: number): string => {
 };
 
 const months = [
-  "Tammik.",
-  "Helmik.",
-  "Maalisk.",
-  "Huhtik.",
-  "Toukok.",
-  "Kesäk.",
-  "Heinäk",
-  "Elok.",
-  "Syysk.",
-  "Lokak.",
-  "Marrask.",
-  "Jouluk.",
+  'Tammik.',
+  'Helmik.',
+  'Maalisk.',
+  'Huhtik.',
+  'Toukok.',
+  'Kesäk.',
+  'Heinäk.',
+  'Elok.',
+  'Syysk.',
+  'Lokak.',
+  'Marrask.',
+  'Jouluk.'
 ];
 
 @Component({
   computed: {
     ...mapState({
-      adminData: "admin",
-      apiCall: "apiCall",
+      adminData: 'admin',
+      apiCall: 'apiCall'
     }),
     ...mapGetters({
-      prices: "adminGetYearPrices",
-    }),
+      prices: 'adminGetYearPrices'
+    })
   },
   methods: {
     ...mapActions({
-      setYear: "changeAdminYear",
-      updatePrice: "editPrice",
-    }),
+      setYear: 'changeAdminYear',
+      updatePrice: 'editPrice'
+    })
   },
   components: {
     LocalWindow,
     PriceEditor,
-    Loading,
-  },
+    Loading
+  }
 })
 export default class AdminPrice extends Vue {
   adminData!: AdminData;
@@ -158,50 +158,55 @@ export default class AdminPrice extends Vue {
   priceEditorBase: PriceEditorBase = {};
   dataSchema: DataItem[] = [
     {
-      key: "start",
-      header: "Alkaen",
-      func: (val: DateDay) => `${val.day} ${months[val.month]}`,
+      key: 'start',
+      header: 'Alkaen',
+      func: (val: DateDay) => `${val.day} ${months[val.month]}`
     },
     {
-      key: "end",
-      header: "Päättyy",
-      func: (val: DateDay) => `${val.day} ${months[val.month]}`,
+      key: 'end',
+      header: 'Päättyy',
+      func: (val: DateDay) => `${val.day} ${months[val.month]}`
     },
     {
-      key: "fod",
-      header: "Ruoka",
-      func: (val: "lunch" | "coffee" | "dinner") => {
+      key: 'fod',
+      header: 'Ruoka',
+      func: (val: 'lunch' | 'coffee' | 'dinner') => {
         switch (val) {
-          case "lunch":
-            return "Lounas";
-          case "coffee":
-            return "Päiväkahvi";
-          case "dinner":
-            return "Illallinen";
+          case 'lunch':
+            return 'Lounas';
+          case 'coffee':
+            return 'Päiväkahvi';
+          case 'dinner':
+            return 'Illallinen';
         }
       },
-      specialOnly: true,
+      specialOnly: true
     },
     {
-      key: "normal",
-      header: "Aikuinen",
-      func: numToMoney,
+      key: 'normal',
+      header: 'Aikuinen',
+      func: numToMoney
     },
     {
-      key: "young",
-      header: "Nuori",
-      func: numToMoney,
+      key: 'discount',
+      header: 'Alennettu',
+      func: numToMoney
     },
     {
-      key: "child",
-      header: "Lapsi",
-      func: numToMoney,
+      key: 'young',
+      header: 'Nuori',
+      func: numToMoney
     },
     {
-      key: "time",
-      header: "Kello",
-      specialOnly: true,
+      key: 'child',
+      header: 'Lapsi',
+      func: numToMoney
     },
+    {
+      key: 'time',
+      header: 'Kello',
+      specialOnly: true
+    }
   ];
 
   mounted() {
@@ -224,10 +229,10 @@ export default class AdminPrice extends Vue {
   }
 
   get basicPrices() {
-    return this.prices.filter((price) => !price.special);
+    return this.prices.filter(price => !price.special);
   }
   get specialPrices() {
-    return this.prices.filter((price) => price.special);
+    return this.prices.filter(price => price.special);
   }
   get isLoading() {
     return !!this.apiCall.price;
@@ -239,15 +244,15 @@ export default class AdminPrice extends Vue {
       : this.basicPrices;
     return priceList
       .filter(
-        (p) =>
+        p =>
           !this.priceEditorBase.price || p.id !== this.priceEditorBase.price.id
       )
-      .map((p) => ({ start: p.start, end: p.end, fod: p.fod }));
+      .map(p => ({ start: p.start, end: p.end, fod: p.fod }));
   }
 }
 </script>
 <style lang="scss">
-@import "../themes.scss";
+@import '../themes.scss';
 
 .admin-price {
   .loaded-content {

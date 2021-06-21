@@ -10,16 +10,17 @@ import {
   AllergyProfile,
   TMonth,
   Day,
-  AllPayments,
-} from "./types";
-import { Dictionary } from "lodash";
+  AllPayments
+} from './types';
+import { Dictionary } from 'lodash';
 
 type RespPrice = {
   id: string;
-  fod: "lunch" | "coffee" | "dinner";
+  fod: 'lunch' | 'coffee' | 'dinner';
   start: string;
   end: string;
   normal: number;
+  discount: number;
   young: number;
   child: number;
   special: boolean;
@@ -33,11 +34,11 @@ type WithUserId<T> = {
 };
 
 const dateDayFromString = (s: string, defaultYear: number): DateDay => {
-  const splitted = s.split("-");
+  const splitted = s.split('-');
   return {
     year: Number(splitted[0]) || defaultYear,
     month: Number(splitted[1]) ? Number(splitted[1]) - 1 : 0,
-    day: Number(splitted[2]) || 1,
+    day: Number(splitted[2]) || 1
   };
 };
 
@@ -46,9 +47,9 @@ const handleErrors = (setAuth: (status: AuthRole) => void) => (
 ): Response => {
   if (!res.ok) {
     if (res.status === 401) {
-      setAuth("unauthorized");
+      setAuth('unauthorized');
     }
-    throw new Error("Unauthorized");
+    throw new Error('Unauthorized');
   }
   return res;
 };
@@ -59,15 +60,15 @@ const stringFromDateDay = ({ year, month, day }: DateDay): string =>
   }`;
 
 const headers = (password: string): Dictionary<string> => ({
-  "Content-Type": "application/json",
-  Authorization: password,
+  'Content-Type': 'application/json',
+  Authorization: password
 });
 const endpoint: string = process.env.VUE_APP_ENDPOINT;
 
 function withUserId<T>(data: T, userId: string): WithUserId<T> {
   return {
     userId,
-    data,
+    data
   };
 }
 
@@ -79,11 +80,11 @@ const prices = {
   ): Promise<YearPrice> {
     const path = `${endpoint}/prices/getByYear/${year}`;
     const resp: ApiResponse<RespPrice[]> = await fetch(path, {
-      method: "GET",
-      headers: headers(password),
+      method: 'GET',
+      headers: headers(password)
     })
       .then(handleErrors(setAuth))
-      .then((res) => {
+      .then(res => {
         return res.json();
       });
     if (resp.role) {
@@ -92,11 +93,11 @@ const prices = {
     return {
       ts: resp.ts,
       year,
-      prices: resp.data.map((price) => ({
+      prices: resp.data.map(price => ({
         ...price,
         start: dateDayFromString(price.start, year),
-        end: dateDayFromString(price.end, year),
-      })),
+        end: dateDayFromString(price.end, year)
+      }))
     };
   },
   async addNew(
@@ -108,15 +109,15 @@ const prices = {
     const serverPrice: RespPrice = {
       ...price,
       start: stringFromDateDay(price.start),
-      end: stringFromDateDay(price.end),
+      end: stringFromDateDay(price.end)
     };
     const resp: ApiResponse<RespPrice[]> = await fetch(path, {
-      method: "POST",
+      method: 'POST',
       headers: headers(password),
-      body: JSON.stringify(serverPrice),
+      body: JSON.stringify(serverPrice)
     })
       .then(handleErrors(setAuth))
-      .then((res) => {
+      .then(res => {
         return res.json();
       });
     if (resp.role) {
@@ -125,13 +126,13 @@ const prices = {
     return {
       ts: resp.ts,
       year: price.start.year,
-      prices: resp.data.map((p) => ({
+      prices: resp.data.map(p => ({
         ...p,
         start: dateDayFromString(p.start, price.start.year),
-        end: dateDayFromString(p.end, price.start.year),
-      })),
+        end: dateDayFromString(p.end, price.start.year)
+      }))
     };
-  },
+  }
 };
 
 const users = {
@@ -141,11 +142,11 @@ const users = {
   ): Promise<AllUsers> {
     const path = `${endpoint}/user/getAll`;
     const resp: ApiResponse<User[]> = await fetch(path, {
-      method: "GET",
-      headers: headers(password),
+      method: 'GET',
+      headers: headers(password)
     })
       .then(handleErrors(setAuth))
-      .then((res) => {
+      .then(res => {
         return res.json();
       });
     if (resp.role) {
@@ -153,7 +154,7 @@ const users = {
     }
     return {
       ts: resp.ts,
-      users: resp.data,
+      users: resp.data
     };
   },
   async addNewUser(
@@ -163,12 +164,12 @@ const users = {
   ): Promise<AllUsers> {
     const path = `${endpoint}/user/add`;
     const resp: ApiResponse<User[]> = await fetch(path, {
-      method: "POST",
+      method: 'POST',
       headers: headers(password),
-      body: name,
+      body: name
     })
       .then(handleErrors(setAuth))
-      .then((res) => {
+      .then(res => {
         return res.json();
       });
     if (resp.role) {
@@ -176,7 +177,7 @@ const users = {
     }
     return {
       ts: resp.ts,
-      users: resp.data,
+      users: resp.data
     };
   },
   async getUserById(
@@ -186,11 +187,11 @@ const users = {
   ): Promise<IndUser> {
     const path = `${endpoint}/user/getById/${id}`;
     const resp: ApiResponse<IndUser> = await fetch(path, {
-      method: "GET",
-      headers: headers(password),
+      method: 'GET',
+      headers: headers(password)
     })
       .then(handleErrors(setAuth))
-      .then((res) => {
+      .then(res => {
         return res.json();
       });
     if (resp.role) {
@@ -206,19 +207,19 @@ const users = {
   ): Promise<IndUser> {
     const path = `${endpoint}/user/addAllergy`;
     const resp: ApiResponse<IndUser> = await fetch(path, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify(withUserId(allergyProfile, id)),
-      headers: headers(password),
+      headers: headers(password)
     })
       .then(handleErrors(setAuth))
-      .then((res) => {
+      .then(res => {
         return res.json();
       });
     if (resp.role) {
       setAuth(resp.role);
     }
     return resp.data;
-  },
+  }
 };
 
 const regs = {
@@ -231,16 +232,16 @@ const regs = {
   ): Promise<TMonth> {
     const path = `${endpoint}/regs/saveDay`;
     const resp: ApiResponse<TMonth> = await fetch(path, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify({
         ...withUserId(day, id),
         year: dateDay.year,
-        month: dateDay.month,
+        month: dateDay.month
       }),
-      headers: headers(password),
+      headers: headers(password)
     })
       .then(handleErrors(setAuth))
-      .then((res) => {
+      .then(res => {
         return res.json();
       });
     if (resp.role) {
@@ -257,14 +258,14 @@ const regs = {
   ): Promise<TMonth> {
     const path = `${endpoint}/regs/getMonthByUser`;
     const resp: ApiResponse<TMonth> = await fetch(path, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify({
-        ...withUserId({ year, month }, id),
+        ...withUserId({ year, month }, id)
       }),
-      headers: headers(password),
+      headers: headers(password)
     })
       .then(handleErrors(setAuth))
-      .then((res) => {
+      .then(res => {
         return res.json();
       });
     if (resp.role) {
@@ -281,23 +282,23 @@ const regs = {
   ): Promise<TMonth> {
     const path = `${endpoint}/regs/getKitchenDay`;
     const resp: ApiResponse<TMonth> = await fetch(path, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify({
         year,
         month,
-        day,
+        day
       }),
-      headers: headers(password),
+      headers: headers(password)
     })
       .then(handleErrors(setAuth))
-      .then((res) => {
+      .then(res => {
         return res.json();
       });
     if (resp.role) {
       setAuth(resp.role);
     }
     return resp.data;
-  },
+  }
 };
 
 const payments = {
@@ -309,14 +310,14 @@ const payments = {
   ): Promise<AllPayments> {
     const path = `${endpoint}/payments/getPaymentsByYear`;
     const resp: ApiResponse<AllPayments> = await fetch(path, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify({
-        ...withUserId(year, id),
+        ...withUserId(year, id)
       }),
-      headers: headers(password),
+      headers: headers(password)
     })
       .then(handleErrors(setAuth))
-      .then((res) => {
+      .then(res => {
         return res.json();
       });
     if (resp.role) {
@@ -337,21 +338,21 @@ const payments = {
   ): Promise<AllPayments> {
     const path = `${endpoint}/payments/save`;
     const resp: ApiResponse<AllPayments> = await fetch(path, {
-      method: "POST",
+      method: 'POST',
       body: JSON.stringify({
-        ...withUserId(payment, id),
+        ...withUserId(payment, id)
       }),
-      headers: headers(password),
+      headers: headers(password)
     })
       .then(handleErrors(setAuth))
-      .then((res) => {
+      .then(res => {
         return res.json();
       });
     if (resp.role) {
       setAuth(resp.role);
     }
     return resp.data;
-  },
+  }
 };
 
 export default { prices, users, regs, payments };

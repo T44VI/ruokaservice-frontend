@@ -17,7 +17,7 @@
               price.priceEdited ? 'new-price' : 'no-new-price',
               !price.base && !price.allergyProfileID
                 ? 'price-editable'
-                : 'no-price-editable',
+                : 'no-price-editable'
             ]"
           >
             <div
@@ -29,7 +29,7 @@
               "
             >
               <p>{{ price.name || baseNames(price.baseAge) }}</p>
-              <p v-if="!price.base">{{ price.allergies.join(", ") }}</p>
+              <p v-if="!price.base">{{ price.allergies.join(', ') }}</p>
             </div>
 
             <NumPicker
@@ -50,9 +50,9 @@
           <div
             class="summary"
             :class="[
-              food.prices.some((a) => a.priceEdited || a.countEdited)
+              food.prices.some(a => a.priceEdited || a.countEdited)
                 ? 'edited'
-                : 'not-edited',
+                : 'not-edited'
             ]"
           >
             <p>Yhteensä</p>
@@ -78,11 +78,11 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-import { mapState, mapGetters, mapActions } from "vuex";
-import NumPicker from "./NumPicker.vue";
-import AllergyEditor from "./AllergyEditor.vue";
-import LocalWindow from "./LocalWindow.vue";
+import { Vue, Component } from 'vue-property-decorator';
+import { mapState, mapGetters, mapActions } from 'vuex';
+import NumPicker from './NumPicker.vue';
+import AllergyEditor from './AllergyEditor.vue';
+import LocalWindow from './LocalWindow.vue';
 import {
   DMonth,
   TMonth,
@@ -93,14 +93,14 @@ import {
   ApiCallStatus,
   DateDay,
   Day as DayType,
-  Food,
-} from "../types";
-import _ from "lodash";
-import Loading from "./Loading.vue";
+  Food
+} from '../types';
+import _ from 'lodash';
+import Loading from './Loading.vue';
 
 type LocalPrices = {
   name?: string;
-  baseAge: "normal" | "young" | "child";
+  baseAge: 'normal' | 'discount' | 'young' | 'child';
   count: number;
   base: boolean;
   allergyProfileID?: string;
@@ -114,17 +114,18 @@ type LocalFood = {
   time: string;
   basePrices: {
     normal: number;
+    discount: number;
     young: number;
     child: number;
   };
-  fod: "lunch" | "coffee" | "dinner";
+  fod: 'lunch' | 'coffee' | 'dinner';
   prices: LocalPrices[];
 };
 
 const genEmptyAllergyProfile = (): AllergyEditorProfile => {
   return {
-    base: "normal",
-    allergies: [],
+    base: 'normal',
+    allergies: []
   };
 };
 
@@ -135,27 +136,27 @@ function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
 @Component({
   computed: {
     ...mapState({
-      loading: "apiCall",
+      loading: 'apiCall'
     }),
     ...mapGetters({
-      monthData: "choosedMonthData",
-      prices: "choosedMonthPriceData",
-      profiles: "getUserProfiles",
+      monthData: 'choosedMonthData',
+      prices: 'choosedMonthPriceData',
+      profiles: 'getUserProfiles'
     }),
     date() {
       return this.$route.params.day;
-    },
+    }
   },
   methods: {
     ...mapActions({
-      setMonth: "changeMonthTo",
-      saveDay: "saveDay",
+      setMonth: 'changeMonthTo',
+      saveDay: 'saveDay'
     }),
     redirectTo(path: string) {
       this.$router.replace(path);
-    },
+    }
   },
-  components: { NumPicker, AllergyEditor, LocalWindow, Loading },
+  components: { NumPicker, AllergyEditor, LocalWindow, Loading }
 })
 export default class Day extends Vue {
   loading!: ApiCallStatus;
@@ -171,19 +172,19 @@ export default class Day extends Vue {
   allergyEditorOpen = false;
   choosedAllergyEditorProfile = {
     food: -1,
-    price: -1,
+    price: -1
   };
   openAllergyEditor(foodIndex: number, priceIndex?: number) {
     this.allergyEditorOpen = true;
     if (priceIndex && !!(priceIndex + 1)) {
       this.choosedAllergyEditorProfile = {
         food: foodIndex,
-        price: priceIndex,
+        price: priceIndex
       };
     } else {
       this.choosedAllergyEditorProfile = {
         food: foodIndex,
-        price: -1,
+        price: -1
       };
     }
   }
@@ -198,7 +199,7 @@ export default class Day extends Vue {
       this.dayObj.month === -1 ||
       this.dayObj.day === -1
     )
-      this.redirectTo("/cal");
+      this.redirectTo('/cal');
     this.setMonth({ month: this.dayObj.month, year: this.dayObj.year });
   }
 
@@ -219,11 +220,11 @@ export default class Day extends Vue {
 
   save() {
     const theDay: DayType = {
-      num: this.dayObj.day,
+      num: this.dayObj.day
     };
-    this.localDayData.forEach((lf) => {
+    this.localDayData.forEach(lf => {
       const food: Food = {};
-      lf.prices.forEach((lp) => {
+      lf.prices.forEach(lp => {
         if (lp.base) {
           if (lp.count > 0) {
             food[lp.baseAge] = lp.count;
@@ -239,7 +240,7 @@ export default class Day extends Vue {
             base: lp.baseAge,
             count: lp.count,
             allergies: lp.allergies,
-            name: lp.name || "",
+            name: lp.name || ''
           };
           if (!food.specialIds) {
             food.specialIds = [prof];
@@ -251,7 +252,7 @@ export default class Day extends Vue {
         const allergy = {
           base: lp.baseAge,
           count: lp.count,
-          allergies: lp.allergies,
+          allergies: lp.allergies
         };
         if (!food.special) {
           food.special = [allergy];
@@ -275,7 +276,7 @@ export default class Day extends Vue {
     if (food < 0) {
       return {
         valid: false,
-        new: false,
+        new: false
       };
     }
     return {
@@ -284,7 +285,7 @@ export default class Day extends Vue {
         price < 0 ||
         ((!this.localDayData.length ||
           !this.localDayData[food].prices[price]) &&
-          (!this.vuexDayData.length || !this.vuexDayData[food].prices[price])),
+          (!this.vuexDayData.length || !this.vuexDayData[food].prices[price]))
     };
   }
 
@@ -302,7 +303,7 @@ export default class Day extends Vue {
         baseAge: newVal.base,
         count: 1,
         base: false,
-        allergies: newVal.allergies,
+        allergies: newVal.allergies
       };
     } else {
       this.localDayData = [
@@ -314,24 +315,26 @@ export default class Day extends Vue {
             {
               ...this.localDayData[food].prices[price],
               baseAge: newVal.base,
-              allergies: newVal.allergies,
+              allergies: newVal.allergies
             },
-            ...this.localDayData[food].prices.slice(price + 1),
-          ],
+            ...this.localDayData[food].prices.slice(price + 1)
+          ]
         },
-        ...this.localDayData.slice(food + 1),
+        ...this.localDayData.slice(food + 1)
       ];
     }
   }
 
-  baseNames(baseAge: "normal" | "young" | "child") {
+  baseNames(baseAge: 'normal' | 'discount' | 'young' | 'child') {
     switch (baseAge) {
-      case "normal":
-        return "Aikuinen";
-      case "young":
-        return "Nuori (12-24)";
-      case "child":
-        return "Lapsi (4-11)";
+      case 'normal':
+        return 'Aikuinen';
+      case 'discount':
+        return 'Työtön, Opiskelija';
+      case 'young':
+        return 'Nuori (12-24)';
+      case 'child':
+        return 'Lapsi (4-11)';
     }
   }
 
@@ -354,36 +357,36 @@ export default class Day extends Vue {
             ];
       return {
         base: baseAge,
-        allergies,
+        allergies
       };
     }
     this.choosedAllergyEditorProfile = {
       food: -1,
-      price: -1,
+      price: -1
     };
     return genEmptyAllergyProfile();
   }
 
   get edited() {
-    return this.presDayData.some((lf) =>
-      lf.prices.some((lp) => lp.priceEdited || lp.countEdited)
+    return this.presDayData.some(lf =>
+      lf.prices.some(lp => lp.priceEdited || lp.countEdited)
     );
   }
 
   get dayObj(): DateDay {
-    const splitted = this.date.split("-");
+    const splitted = this.date.split('-');
     return {
       year: Number(splitted[0]) ? Math.floor(Number(splitted[0])) : -1,
       month: Number(splitted[1])
         ? Math.floor((Number(splitted[1]) - 1) % 12)
         : -1,
-      day: Number(splitted[2]) ? Math.floor(Number(splitted[2])) : -1,
+      day: Number(splitted[2]) ? Math.floor(Number(splitted[2])) : -1
     };
   }
 
   get dayPrices(): Price[] {
     const prices = this.prices.filter(
-      (p) =>
+      p =>
         (p.start.year < this.dayObj.year ||
           (p.start.year === this.dayObj.year &&
             (p.start.month < this.dayObj.month ||
@@ -396,12 +399,12 @@ export default class Day extends Vue {
                 p.end.day >= this.dayObj.day))))
     );
     return [
-      prices.find((p) => p.fod === "lunch" && p.special) ||
-        prices.find((p) => p.fod === "lunch"),
-      prices.find((p) => p.fod === "coffee" && p.special) ||
-        prices.find((p) => p.fod === "coffee"),
-      prices.find((p) => p.fod === "dinner" && p.special) ||
-        prices.find((p) => p.fod === "dinner"),
+      prices.find(p => p.fod === 'lunch' && p.special) ||
+        prices.find(p => p.fod === 'lunch'),
+      prices.find(p => p.fod === 'coffee' && p.special) ||
+        prices.find(p => p.fod === 'coffee'),
+      prices.find(p => p.fod === 'dinner' && p.special) ||
+        prices.find(p => p.fod === 'dinner')
     ].filter(notEmpty);
   }
 
@@ -412,7 +415,7 @@ export default class Day extends Vue {
         if (this.localDayData && this.localDayData[i]) {
           const { name, time, prices, basePrices, fod } = this.localDayData[i];
           if (lf.name !== name || lf.time !== time || lf.fod !== fod) {
-            throw new Error("State error");
+            throw new Error('State error');
           }
           const mappedPrices = prices.map((lp, j) => {
             return {
@@ -421,12 +424,12 @@ export default class Day extends Vue {
                 (!lf.prices[j] && lp.count !== 0) ||
                 (lf.prices[j] &&
                   (lf.prices[j].allergies.length !== lp.allergies.length ||
-                    !lf.prices[j].allergies.every((st) =>
+                    !lf.prices[j].allergies.every(st =>
                       lp.allergies.includes(st)
                     ))),
               countEdited:
                 (!lf.prices[j] && lp.count !== 0) ||
-                (lf.prices[j] && lf.prices[j].count !== lp.count),
+                (lf.prices[j] && lf.prices[j].count !== lp.count)
             };
           });
           return {
@@ -434,10 +437,10 @@ export default class Day extends Vue {
             time,
             fod,
             basePrices,
-            prices: mappedPrices,
+            prices: mappedPrices
           };
         } else {
-          throw Error("State Error");
+          throw Error('State Error');
         }
       });
     } catch (e) {
@@ -457,38 +460,45 @@ export default class Day extends Vue {
             fod: val.fod,
             basePrices: {
               normal: val.normal,
+              discount: val.discount,
               young: val.young,
-              child: val.child,
+              child: val.child
             },
             prices: [
               {
                 count: 0,
-                baseAge: "normal" as "normal",
+                baseAge: 'normal' as 'normal',
                 base: true,
-                allergies: [] as string[],
+                allergies: [] as string[]
               },
               {
                 count: 0,
-                baseAge: "young" as "young",
+                baseAge: 'discount' as 'discount',
                 base: true,
-                allergies: [] as string[],
+                allergies: [] as string[]
               },
               {
                 count: 0,
-                baseAge: "child" as "child",
+                baseAge: 'young' as 'young',
                 base: true,
-                allergies: [] as string[],
+                allergies: [] as string[]
               },
+              {
+                count: 0,
+                baseAge: 'child' as 'child',
+                base: true,
+                allergies: [] as string[]
+              }
             ].concat(
-              this.profiles.map((prof) => ({
+              this.profiles.map(prof => ({
                 name: prof.name || prof.base,
                 count: 0,
                 baseAge: prof.base,
                 base: false,
                 allergyProfileID: prof.id,
-                allergies: prof.allergies,
+                allergies: prof.allergies
               }))
-            ),
+            )
           })
         );
       };
@@ -496,21 +506,22 @@ export default class Day extends Vue {
         return genEmpty();
       }
       const filtered = this.monthData.days.filter(
-        (d) => d.num === this.dayObj.day
+        d => d.num === this.dayObj.day
       );
       if (filtered.length === 0) {
         return genEmpty();
       }
       if (filtered.length === 1) {
-        return genEmpty().map((lf) => {
+        return genEmpty().map(lf => {
           const food = filtered[0][lf.fod];
           if (!food) {
             return lf;
           }
           const res = _.cloneDeep(lf);
           res.prices[0].count = food.normal || 0;
-          res.prices[1].count = food.young || 0;
-          res.prices[2].count = food.child || 0;
+          res.prices[1].count = food.discount || 0;
+          res.prices[2].count = food.young || 0;
+          res.prices[3].count = food.child || 0;
           if (food && food.specialIds && food.specialIds.length > 0) {
             this.profiles
               .map((pro, index): {
@@ -523,42 +534,42 @@ export default class Day extends Vue {
                 obj:
                   food &&
                   food.specialIds &&
-                  food.specialIds.find((st) => st.specialId === pro.id),
+                  food.specialIds.find(st => st.specialId === pro.id)
               }))
-              .forEach((el) => {
+              .forEach(el => {
                 if (el && el.obj) {
-                  res.prices[el.index + 3] = {
+                  res.prices[el.index + 4] = {
                     name: el.obj.name,
                     baseAge: el.obj.base,
                     count: el.obj.count,
                     base: false,
                     allergyProfileID: el.obj.specialId,
-                    allergies: el.obj.allergies,
+                    allergies: el.obj.allergies
                   };
                 }
               });
             food.specialIds
               .filter(
-                (s) => !this.profiles.map((pro) => pro.id).includes(s.specialId)
+                s => !this.profiles.map(pro => pro.id).includes(s.specialId)
               )
-              .forEach((el) => {
+              .forEach(el => {
                 res.prices.push({
                   name: el.name,
                   baseAge: el.base,
                   count: el.count,
                   base: false,
-                  allergies: el.allergies,
+                  allergies: el.allergies
                 });
               });
           }
           if (food.special && food.special.length) {
             res.prices.push(
-              ...food.special.map((sf) => {
+              ...food.special.map(sf => {
                 return {
                   base: false,
                   baseAge: sf.base,
                   count: sf.count,
-                  allergies: sf.allergies,
+                  allergies: sf.allergies
                 };
               })
             );
@@ -573,7 +584,7 @@ export default class Day extends Vue {
 }
 </script>
 <style lang="scss">
-@import "../themes.scss";
+@import '../themes.scss';
 
 .food {
   .food-header {

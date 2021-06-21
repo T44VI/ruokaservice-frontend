@@ -131,7 +131,7 @@ export default class App extends Vue {
     auth: "Vaihda profiilia",
   };
 
-  buildNum = "Devbuild-2020-06-17-1";
+  buildNum = "Devbuild-2021-06-21-1";
 }
 </script>
 
@@ -148,9 +148,10 @@ export default class App extends Vue {
 .theme {
   min-height: 100vh;
   min-width: 100vw;
+  transition: color 0.5s, background-color 0.5s;
   @include themed() {
     color: t($text);
-    background: t($bg);
+    background-color: t($bg);
   }
 }
 

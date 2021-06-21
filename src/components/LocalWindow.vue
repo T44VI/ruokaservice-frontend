@@ -14,8 +14,8 @@
   </transition>
 </template>
 <script lang="ts">
-import "reflect-metadata";
-import { Vue, Component, Prop } from "vue-property-decorator";
+import 'reflect-metadata';
+import { Vue, Component, Prop } from 'vue-property-decorator';
 
 @Component
 export default class LocalWindow extends Vue {
@@ -25,7 +25,7 @@ export default class LocalWindow extends Vue {
 }
 </script>
 <style lang="scss">
-@import "../themes.scss";
+@import '../themes.scss';
 
 .local-window {
   opacity: 1;
@@ -59,7 +59,7 @@ export default class LocalWindow extends Vue {
       }
     }
     .real-content {
-      overflow: scroll;
+      overflow-y: scroll;
       max-height: 85vh;
       padding: 0.2rem 0;
     }

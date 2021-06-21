@@ -21,7 +21,7 @@
           >
             <div v-if="day.num === 0"></div>
             <router-link v-else :to="dayPressLink(day.num)">
-              <div class="month-dayNum">{{ day.num ? day.num : " " }}</div>
+              <div class="month-dayNum">{{ day.num ? day.num : ' ' }}</div>
 
               <div class="month-dayInfo" :class="day.special">
                 <h4 v-if="day.num && choosedValue !== 1">
@@ -40,7 +40,7 @@
                       }}
                     </h4>
                     <h4>
-                      {{ day.price % 100 ? "." + (day.price % 100) : "" }}
+                      {{ day.price % 100 ? '.' + (day.price % 100) : '' }}
                     </h4>
                   </div>
                   <div><h4>€</h4></div>
@@ -61,12 +61,12 @@
   </div>
 </template>
 <script lang="ts">
-import { Vue, Component } from "vue-property-decorator";
-import _ from "lodash";
-import { TMonth, Food, DMonth, Price, Day } from "../types";
-import MiniTabChooser from "./MiniTabChooser.vue";
-import Loading from "./Loading.vue";
-import { mapGetters, mapState, mapMutations, mapActions } from "vuex";
+import { Vue, Component } from 'vue-property-decorator';
+import _ from 'lodash';
+import { TMonth, Food, DMonth, Price, Day } from '../types';
+import MiniTabChooser from './MiniTabChooser.vue';
+import Loading from './Loading.vue';
+import { mapGetters, mapState, mapMutations, mapActions } from 'vuex';
 
 type LocalDay = {
   num: number;
@@ -84,6 +84,7 @@ const currentTime = new Date();
 
 const sumCategories = (food: Food) =>
   (food.normal || 0) +
+  (food.discount || 0) +
   (food.young || 0) +
   (food.child || 0) +
   (food.special ? food.special.reduce((acc, val) => acc + val.count, 0) : 0) +
@@ -92,30 +93,31 @@ const sumCategories = (food: Food) =>
     : 0);
 
 const calculatePrices = (relevantPrices: Price[], day: Day): number => {
-  const baseCats: ("normal" | "young" | "child")[] = [
-    "normal",
-    "young",
-    "child",
+  const baseCats: ('normal' | 'discount' | 'young' | 'child')[] = [
+    'normal',
+    'discount',
+    'young',
+    'child'
   ];
-  const baseFods: ("lunch" | "coffee" | "dinner")[] = [
-    "lunch",
-    "coffee",
-    "dinner",
+  const baseFods: ('lunch' | 'coffee' | 'dinner')[] = [
+    'lunch',
+    'coffee',
+    'dinner'
   ];
-  const prices = baseFods.map((fod: "lunch" | "coffee" | "dinner"): number => {
+  const prices = baseFods.map((fod: 'lunch' | 'coffee' | 'dinner'): number => {
     if (!day[fod]) {
       return 0;
     }
     const food: Food = day[fod] as Food;
-    const filteredPrices = relevantPrices.filter((p) => p.fod === fod);
+    const filteredPrices = relevantPrices.filter(p => p.fod === fod);
     if (filteredPrices.length === 0) {
       return 0;
     }
-    const price = filteredPrices.some((p) => p.special)
-      ? filteredPrices.filter((p) => p.special)[0]
+    const price = filteredPrices.some(p => p.special)
+      ? filteredPrices.filter(p => p.special)[0]
       : filteredPrices[0];
     const counts = baseCats.map(
-      (base: "normal" | "young" | "child") =>
+      (base: 'normal' | 'discount' | 'young' | 'child') =>
         (food[base] || 0) +
         (food && food.special && food.special.length
           ? food.special.reduce(
@@ -133,7 +135,8 @@ const calculatePrices = (relevantPrices: Price[], day: Day): number => {
     return (
       price.normal * counts[0] +
       price.young * counts[1] +
-      price.child * counts[2]
+      price.young * counts[2] +
+      price.child * counts[3]
     );
   });
   return prices.reduce((acc: number, price: number) => acc + price, 0);
@@ -143,16 +146,16 @@ const calculatePrices = (relevantPrices: Price[], day: Day): number => {
   components: { MiniTabChooser, Loading },
   computed: {
     ...mapState({
-      month: "choosedMonth",
+      month: 'choosedMonth'
     }),
     ...mapGetters({
-      monthData: "choosedMonthData",
-      prices: "choosedMonthPriceData",
-    }),
+      monthData: 'choosedMonthData',
+      prices: 'choosedMonthPriceData'
+    })
   },
   methods: {
-    ...mapActions(["changeMonth"]),
-  },
+    ...mapActions(['changeMonth'])
+  }
 })
 export default class Month extends Vue {
   month!: DMonth;
@@ -160,7 +163,7 @@ export default class Month extends Vue {
   prices!: Price[];
   changeMonth!: (change: number) => void;
 
-  keys = ["Syöjien määrä", "Hinta", "Kaikki"];
+  keys = ['Syöjien määrä', 'Hinta', 'Kaikki'];
   onChange(val: number) {
     this.choosedValue = val;
   }
@@ -168,25 +171,25 @@ export default class Month extends Vue {
 
   colors = [
     {
-      class: "onlyCoffee",
-      desc: "Vain kahvi",
+      class: 'onlyCoffee',
+      desc: 'Vain kahvi'
     },
     {
-      class: "allSame",
-      desc: "Joka ruoalla sama määrä",
+      class: 'allSame',
+      desc: 'Joka ruoalla sama määrä'
     },
     {
-      class: "exception",
-      desc: "Määrä vaihtuu päivän mittaan",
+      class: 'exception',
+      desc: 'Määrä vaihtuu päivän mittaan'
     },
     {
-      class: "specialPrice",
-      desc: "Erikoishinta",
+      class: 'specialPrice',
+      desc: 'Erikoishinta'
     },
     {
-      class: "noFood",
-      desc: "Ei yhteisruokailua",
-    },
+      class: 'noFood',
+      desc: 'Ei yhteisruokailua'
+    }
   ];
 
   mounted() {
@@ -195,16 +198,16 @@ export default class Month extends Vue {
 
   dayPressLink(day: number) {
     return {
-      name: this.choosedValue === 2 ? "kitchen" : "day",
+      name: this.choosedValue === 2 ? 'kitchen' : 'day',
       params: {
-        day: this.month.year + "-" + (this.month.month + 1) + "-" + day,
-      },
+        day: this.month.year + '-' + (this.month.month + 1) + '-' + day
+      }
     };
   }
 
   getLocalDay(day: number): LocalDay {
     const prices = this.prices.filter(
-      (p) =>
+      p =>
         (p.start.year < this.month.year ||
           (p.start.year === this.month.year &&
             (p.start.month < this.month.month ||
@@ -218,21 +221,21 @@ export default class Month extends Vue {
       switch (this.choosedValue) {
         case 2: {
           const filteredAllDays = this.monthData.allDays.filter(
-            (d) => d.num === day
+            d => d.num === day
           );
           if (filteredAllDays.length) {
             return {
               num: day,
               eaters: filteredAllDays.reduce((acc, cv) => acc + cv.count, 0),
               special: [
-                prices.filter((p) => p.special).length ? "specialPrice" : "",
-              ],
+                prices.filter(p => p.special).length ? 'specialPrice' : ''
+              ]
             };
           }
           break;
         }
         default: {
-          const filtered = this.monthData.days.filter((d) => d.num === day);
+          const filtered = this.monthData.days.filter(d => d.num === day);
           if (filtered.length) {
             const d = filtered[0];
             const lunch = d.lunch ? sumCategories(d.lunch) : 0;
@@ -244,14 +247,14 @@ export default class Month extends Vue {
               price: calculatePrices(prices, d),
               special: [
                 lunch === 0 && dinner === 0 && coffee > 0
-                  ? "onlyCoffee"
+                  ? 'onlyCoffee'
                   : lunch === coffee && lunch === dinner && lunch > 0
-                  ? "allSame"
+                  ? 'allSame'
                   : lunch !== coffee || lunch !== dinner
-                  ? "exception"
-                  : "",
-                prices.filter((p) => p.special).length ? "specialPrice" : "",
-              ],
+                  ? 'exception'
+                  : '',
+                prices.filter(p => p.special).length ? 'specialPrice' : ''
+              ]
             };
           }
         }
@@ -259,13 +262,13 @@ export default class Month extends Vue {
       return {
         num: day,
         eaters: 0,
-        special: [prices.filter((p) => p.special).length ? "specialPrice" : ""],
+        special: [prices.filter(p => p.special).length ? 'specialPrice' : '']
       };
     }
     return {
       num: day,
       eaters: 0,
-      special: ["noFood"],
+      special: ['noFood']
     };
   }
 
@@ -291,25 +294,25 @@ export default class Month extends Vue {
 
   get monthName(): string {
     const months = [
-      "Tammikuu",
-      "Helmikuu",
-      "Maaliskuu",
-      "Huhtikuu",
-      "Toukokuu",
-      "Kesäkuu",
-      "Heinäkuu",
-      "Elokuu",
-      "Syyskuu",
-      "Lokakuu",
-      "Marraskuu",
-      "Joulukuu",
+      'Tammikuu',
+      'Helmikuu',
+      'Maaliskuu',
+      'Huhtikuu',
+      'Toukokuu',
+      'Kesäkuu',
+      'Heinäkuu',
+      'Elokuu',
+      'Syyskuu',
+      'Lokakuu',
+      'Marraskuu',
+      'Joulukuu'
     ];
     return months[this.month.month];
   }
 }
 </script>
 <style lang="scss">
-@import "../themes.scss";
+@import '../themes.scss';
 
 .month-elem {
   .month-week {

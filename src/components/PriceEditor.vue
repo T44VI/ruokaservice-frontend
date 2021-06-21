@@ -20,7 +20,7 @@
     </div>
     <div class="row component-row">
       <p class="comp-header">
-        {{ continuity === 1 ? "Aloituspäivä" : "Päivämäärä" }}:
+        {{ continuity === 1 ? 'Aloituspäivä' : 'Päivämäärä' }}:
       </p>
       <CalPicker
         :dateDay="startDay"
@@ -48,6 +48,10 @@
           <input v-model="normal" type="float" />
         </div>
         <div class="row input-row">
+          <p>Alennettu:</p>
+          <input v-model="discount" type="float" />
+        </div>
+        <div class="row input-row">
           <p>Nuori:</p>
           <input v-model="young" type="float" />
         </div>
@@ -67,23 +71,24 @@
   </div>
 </template>
 <script lang="ts">
-import "reflect-metadata";
-import { Vue, Component, Prop } from "vue-property-decorator";
-import _ from "lodash";
-import MiniTabChooser from "./MiniTabChooser.vue";
-import LocalWindow from "./LocalWindow.vue";
-import CalPicker from "./CalPicker.vue";
-import { Price, DateDay, PriceEditorBase, DateDayBlock } from "../types";
-import dateDayFunctions from "../DateDayFunctions";
+import 'reflect-metadata';
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import _ from 'lodash';
+import MiniTabChooser from './MiniTabChooser.vue';
+import LocalWindow from './LocalWindow.vue';
+import CalPicker from './CalPicker.vue';
+import { Price, DateDay, PriceEditorBase, DateDayBlock } from '../types';
+import dateDayFunctions from '../DateDayFunctions';
 
-type Fod = "lunch" | "coffee" | "dinner";
+type Fod = 'lunch' | 'coffee' | 'dinner';
 
 type LocalPrice = {
-  fod?: "lunch" | "coffee" | "dinner";
+  fod?: 'lunch' | 'coffee' | 'dinner';
   special?: boolean;
   name?: string;
   time?: string;
   normal?: number;
+  discount?: number;
   young?: number;
   child?: number;
   start?: DateDay;
@@ -92,31 +97,31 @@ type LocalPrice = {
 
 const fodKeys: { fod: Fod; key: string; time: string }[] = [
   {
-    fod: "lunch",
-    key: "Lounas",
-    time: "12:00",
+    fod: 'lunch',
+    key: 'Lounas',
+    time: '12:00'
   },
   {
-    fod: "coffee",
-    key: "Päiväkahvi",
-    time: "15:00",
+    fod: 'coffee',
+    key: 'Päiväkahvi',
+    time: '15:00'
   },
   {
-    fod: "dinner",
-    key: "Illallinen",
-    time: "18:00",
-  },
+    fod: 'dinner',
+    key: 'Illallinen',
+    time: '18:00'
+  }
 ];
 
 const getFodIndex = (fod: Fod): number =>
-  fod === "lunch" ? 0 : fod === "coffee" ? 1 : 2;
+  fod === 'lunch' ? 0 : fod === 'coffee' ? 1 : 2;
 
 @Component({
   components: {
     MiniTabChooser,
     LocalWindow,
-    CalPicker,
-  },
+    CalPicker
+  }
 })
 export default class PriceEditor extends Vue {
   @Prop() readonly price!: PriceEditorBase;
@@ -125,21 +130,22 @@ export default class PriceEditor extends Vue {
   @Prop() readonly blockedDateDays!: DateDayBlock[];
   @Prop() readonly isSpecial!: boolean;
 
-  id = "";
-  name = "";
+  id = '';
+  name = '';
   normal = 0;
+  discount = 0;
   young = 0;
   child = 0;
-  time = "";
+  time = '';
   fodIndex = fodKeys.length;
   changeFod(newVal: number) {
     this.fodIndex = newVal;
   }
-  fodKeyArr = fodKeys.map((a) => a.key);
+  fodKeyArr = fodKeys.map(a => a.key);
   startDay: DateDay = {
     year: this.year,
     month: new Date().getMonth(),
-    day: -1,
+    day: -1
   };
   changeStartDay(val: DateDay) {
     this.startDay = val;
@@ -159,26 +165,28 @@ export default class PriceEditor extends Vue {
     this.reset();
   }
 
-  errormessage = "";
+  errormessage = '';
 
   reset() {
-    this.errormessage = "";
+    this.errormessage = '';
     if (this.price.price) {
       const {
         id,
         name,
         fod,
         normal,
+        discount,
         young,
         child,
         start,
         end,
-        time,
+        time
       } = this.price.price;
       this.id = id;
       this.name = name;
       this.fodIndex = getFodIndex(fod);
       this.normal = normal / 100;
+      this.discount = discount / 100;
       this.young = young / 100;
       this.child = child / 100;
       if (
@@ -190,7 +198,7 @@ export default class PriceEditor extends Vue {
         this.endDay = {
           year: this.year,
           month: new Date().getMonth(),
-          day: -1,
+          day: -1
         };
       } else {
         this.continuity = 1;
@@ -200,45 +208,46 @@ export default class PriceEditor extends Vue {
       this.isNewValue = false;
       this.time = time;
     } else {
-      this.id = "";
-      this.name = "";
+      this.id = '';
+      this.name = '';
       this.fodIndex = fodKeys.length;
       this.normal = 0;
+      this.discount = 0;
       this.young = 0;
       this.child = 0;
       this.continuity = 2;
       this.startDay = {
         year: this.year,
         month: new Date().getMonth(),
-        day: -1,
+        day: -1
       };
       this.endDay = {
         year: this.year,
         month: new Date().getMonth(),
-        day: -1,
+        day: -1
       };
-      this.time = "";
+      this.time = '';
     }
   }
 
   validate(): Price | string {
     if (this.fodIndex !== 0 && this.fodIndex !== 1 && this.fodIndex !== 2) {
-      return "Ruoka on valittava";
+      return 'Ruoka on valittava';
     }
     const id = this.id;
     const name = this.isSpecial ? this.name : fodKeys[this.fodIndex].key;
     if (!name.length) {
-      return "Nimi ei voi olla tyhjä";
+      return 'Nimi ei voi olla tyhjä';
     }
     const fod = fodKeys[this.fodIndex].fod;
     const start = this.startDay;
     const end = this.continuity === 0 ? this.startDay : this.endDay;
     if (dateDayFunctions.isGreaterThan(start, end)) {
-      return "Aloituspäivä ei voi olla lopetuspäivän jälkeen";
+      return 'Aloituspäivä ei voi olla lopetuspäivän jälkeen';
     }
     if (
       this.blockedByFod.some(
-        (b) =>
+        b =>
           (dateDayFunctions.isLessOrEqual(b.start, start) &&
             dateDayFunctions.isGreaterOrEqual(b.end, start)) ||
           (dateDayFunctions.isLessOrEqual(b.start, end) &&
@@ -247,23 +256,24 @@ export default class PriceEditor extends Vue {
             dateDayFunctions.isLessThan(b.start, end))
       )
     ) {
-      return "Aikajänne on jo varattu";
+      return 'Aikajänne on jo varattu';
     }
     const time = this.isSpecial ? this.time : fodKeys[this.fodIndex].time;
-    if (time.length > 5 || !time.includes(":")) {
-      return "Anna aika muodossa HH:MM";
+    if (time.length > 5 || !time.includes(':')) {
+      return 'Anna aika muodossa HH:MM';
     }
     const normal = Math.round(this.normal * 100);
+    const discount = Math.round(this.discount * 100);
     const young = Math.round(this.young * 100);
     const child = Math.round(this.child * 100);
-    if (!(normal + 1) || !(young + 1) || !(child + 1)) {
-      return "Hinnat eivät kelvanneet. Muista käyttää pistettä desimaalierottimena!";
+    if (!(normal + 1) || !(discount + 1) || !(young + 1) || !(child + 1)) {
+      return 'Hinnat eivät kelvanneet. Muista käyttää pistettä desimaalierottimena!';
     }
-    if (normal % 1 || young % 1 || child % 1) {
-      return "Senttiä pienempää arvoa ei voi antaa hintaan";
+    if (normal % 1 || discount % 1 || young % 1 || child % 1) {
+      return 'Senttiä pienempää arvoa ei voi antaa hintaan';
     }
-    if (normal < 0 || young < 0 || child < 0) {
-      return "Negatiivista hintaa ei voi antaa";
+    if (normal < 0 || discount < 0 || young < 0 || child < 0) {
+      return 'Negatiivista hintaa ei voi antaa';
     }
     return {
       id,
@@ -272,16 +282,17 @@ export default class PriceEditor extends Vue {
       end,
       time,
       normal,
+      discount,
       young,
       child,
       name,
-      special: this.isSpecial,
+      special: this.isSpecial
     };
   }
 
   save() {
     const validated = this.validate();
-    if (typeof validated === "string") {
+    if (typeof validated === 'string') {
       this.errormessage = validated;
     } else {
       this.onChange(validated);
@@ -293,7 +304,7 @@ export default class PriceEditor extends Vue {
       return [];
     }
     return this.blockedDateDays.filter(
-      (b) => b.fod === fodKeys[this.fodIndex].fod
+      b => b.fod === fodKeys[this.fodIndex].fod
     );
   }
 
@@ -304,7 +315,7 @@ export default class PriceEditor extends Vue {
     return this.blockedByFod.concat({
       end: { year: this.year, month: 11, day: 31 },
       start: this.endDay,
-      fod: "lunch",
+      fod: 'lunch'
     });
   }
 
@@ -315,13 +326,13 @@ export default class PriceEditor extends Vue {
     return this.blockedByFod.concat({
       start: { year: this.year, month: 0, day: 1 },
       end: this.startDay,
-      fod: "lunch",
+      fod: 'lunch'
     });
   }
 }
 </script>
 <style lang="scss">
-@import "../themes.scss";
+@import '../themes.scss';
 
 .price-editor {
   .price-editor-buttons {

@@ -1,4 +1,4 @@
-import _, { Dictionary, iteratee } from "lodash";
+import _, { Dictionary } from 'lodash';
 
 export interface Config {
   defaultUser?: string;
@@ -21,7 +21,7 @@ export interface Payment {
   id: string;
   amount: number;
   name: string;
-  type: "ind" | "month" | "year";
+  type: 'ind' | 'month' | 'year';
   date: DateDay;
 }
 
@@ -32,7 +32,7 @@ export interface AllPayments {
 
 export interface ApiResponse<T> {
   ts: number;
-  role?: "user" | "admin";
+  role?: 'user' | 'admin';
   data: T;
 }
 
@@ -51,7 +51,7 @@ export type IndUser = User & {
   allergyProfiles: AllergyProfile[];
 };
 
-export type AuthRole = "user" | "admin" | "unauthorized";
+export type AuthRole = 'user' | 'admin' | 'unauthorized';
 
 export interface AdminData {
   year: number;
@@ -60,7 +60,7 @@ export interface AdminData {
 export interface DateDayBlock {
   start: DateDay;
   end: DateDay;
-  fod: "lunch" | "coffee" | "dinner";
+  fod: 'lunch' | 'coffee' | 'dinner';
 }
 
 export interface AllergiesTs {
@@ -79,7 +79,7 @@ export interface UserData {
 export interface AllergyProfile {
   id: string;
   name: string;
-  base: "normal" | "young" | "child";
+  base: 'normal' | 'discount' | 'young' | 'child';
   allergies: string[];
 }
 
@@ -88,7 +88,7 @@ export interface PriceEditorBase {
 }
 
 export interface AllergyEditorProfile {
-  base: "normal" | "young" | "child";
+  base: 'normal' | 'discount' | 'young' | 'child';
   allergies: string[];
 }
 
@@ -105,7 +105,7 @@ export interface ApiCallStatus {
   payments: number;
 }
 
-export type apiCallOption = "month" | "price" | "user" | "kitchen" | "payments";
+export type apiCallOption = 'month' | 'price' | 'user' | 'kitchen' | 'payments';
 
 export interface KitchenDay {
   month: number;
@@ -138,6 +138,7 @@ export interface Day {
 
 export interface Food {
   normal?: number;
+  discount?: number;
   young?: number;
   child?: number;
   specialIds?: SpecialFoodWithId[];
@@ -146,25 +147,26 @@ export interface Food {
 
 export interface SpecialFoodWithId {
   specialId: string;
-  base: "normal" | "young" | "child";
+  base: 'normal' | 'discount' | 'young' | 'child';
   count: number;
   allergies: string[];
   name: string;
 }
 
 export interface SpecialFood {
-  base: "normal" | "young" | "child";
+  base: 'normal' | 'discount' | 'young' | 'child';
   count: number;
   allergies: string[];
 }
 
 export interface Price {
   id: string;
-  fod: "lunch" | "coffee" | "dinner";
+  fod: 'lunch' | 'coffee' | 'dinner';
   special: boolean;
   name: string;
   time: string;
   normal: number;
+  discount: number;
   young: number;
   child: number;
   start: DateDay;
